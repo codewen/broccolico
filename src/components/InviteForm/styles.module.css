@@ -1,0 +1,12 @@
+.header:after {
+    content: "";
+    position: relative;
+    left: 50%;
+    top: 1rem;
+    transform: translate(-50%);
+    display: block;
+    background-color: black;
+    width: 2rem;
+    height: 2px;
+
+}
