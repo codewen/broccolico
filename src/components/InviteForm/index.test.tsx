@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event'
 
 describe('InviteForm', () => {
 
-    const submitFormMock = jest.fn(() => Promise.resolve({ status: 200 }));
+    const submitFormMock = jest.fn(() => Promise.resolve(null));
     const closeModalMock = jest.fn();
     const user = userEvent.setup()
 
@@ -92,6 +92,22 @@ describe('InviteForm', () => {
             "emailConfirm": EMAIL,
             "fullName": NAME + 'o'
         });
+    })
+
+    it('submit data and get server error', async () => {
+        const SERVER_ERROR_MSG = "This is a server error message";
+        render(<InviteForm submitForm={jest.fn(() => Promise.resolve(SERVER_ERROR_MSG))} closeModal={closeModalMock} />);
+        expect(screen.getByTestId('invite-form')).toBeInTheDocument()
+
+        const NAME = 'Yao';
+        const EMAIL = 'codewen@gmail.com';
+        await user.type(screen.getByTestId("invite-form-input--fullName"), NAME);
+        await user.type(screen.getByTestId("invite-form-input--customerEmail"), EMAIL);
+        await user.type(screen.getByTestId("invite-form-input--emailConfirm"), EMAIL);
+
+        await user.click(screen.getByTestId('invite-form-input--submit'));
+
+        expect(screen.getByText(SERVER_ERROR_MSG)).toBeInTheDocument()
     })
 
 });

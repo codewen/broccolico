@@ -3,7 +3,7 @@ import styles from './styles.module.css'
 import { Button, TextInput } from 'flowbite-react';
 
 interface IInviteFormProps {
-  submitForm: (value: FormValue) => Promise<any>,
+  submitForm: (value: FormValue) => Promise<null | string>,
   closeModal: () => void
 }
 type ValidateResult = {
@@ -59,20 +59,17 @@ const InviteForm: React.FC<IInviteFormProps> = ({ submitForm, closeModal }: IInv
     setValues(values => ({ ...values, [inputTarget.name]: inputTarget.value }));
   }
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setServerMessage('');
     if (validateForm()) {
       setSubmitting(true);
-      submitForm(values).then((response) => {
-        if (response.status === 200)
-          setAlldone(true);
-      }).catch((error) => {
-        console.log(error);
-        setServerMessage(error.response.data.errorMessage);
-      }).finally(() => {
-        setSubmitting(false);
-      });
+      const errorMsg = await submitForm(values);
+      if (errorMsg)
+        setServerMessage(errorMsg);
+      else
+        setAlldone(true);
+      setSubmitting(false);
     }
   }
 

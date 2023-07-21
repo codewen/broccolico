@@ -1,6 +1,5 @@
-import Image from 'next/image'
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+
+import { useState } from 'react';
 import { Button, Modal } from 'flowbite-react';
 import InviteForm, { FormField, FormValue } from '../components/InviteForm';
 
@@ -8,11 +7,20 @@ const Home = () => {
 
   const [openModal, setOpenModal] = useState<string | undefined>();
 
-  const submitToServer = (value: FormValue) => {
-    return axios.post('https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth', {
-      "name": value.fullName,
-      "email": value.customerEmail
+  const submitToServer = async (value: FormValue) => {
+    const response = await fetch('https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth', {
+      method: 'POST',
+      body: JSON.stringify({
+        "name": value.fullName,
+        "email": value.customerEmail
+      })
     })
+    if (response.status === 200)
+      return null;
+    else if (response.status === 400) {
+      const errorMsg = await response.json();
+      return errorMsg.errorMessage;
+    }
   }
   const closeModel = () => {
     setOpenModal(undefined)
