@@ -95,10 +95,17 @@ const InviteForm: React.FC<IInviteFormProps> = ({ submitForm, closeModal }: IInv
     return true;
 
   }
-
+  const resetForm = () => {
+    setValues({
+      fullName: "",
+      customerEmail: "",
+      emailConfirm: ""
+    });
+  }
   const okHandler = () => {
     closeModal();
     setAlldone(false);
+    resetForm();
   }
 
   return (
